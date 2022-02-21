@@ -12,4 +12,4 @@ Howler was my attempt at re-learing firebase with the new update of firebase v9.
 
 ## The Technologies Behind Howler
 
-Howler uses Next.js as a React.js framework, Firebase as a database and authentication means, and Recoil for state management.
+Howler uses Next.js as a React.js framework, Firebase as a database and authentication means, Recoil for state management, and Tailwindcss/HeadlessUI for styling.
