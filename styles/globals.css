@@ -20,4 +20,8 @@
   .signInButton {
     @apply w-full bg-zinc-800 pt-2 pb-2 rounded-full border-zinc-600 border-[1px] hover:bg-zinc-700 hover:border-zinc-500 transition ease-out duration-300 flex items-center justify-center mb-2;
   }
+
+  .selected {
+    @apply text-white underline underline-offset-[10px] decoration-4 decoration-rose-600;
+  }
 }

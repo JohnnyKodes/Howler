@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import { authModalState, authModalType } from "../../atoms/modalAtom";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
+import { signInWithProvider } from "../../firebase/firebaseAuth";
 
 const Login = () => {
   const [isOpen, setIsOpen] = useRecoilState(authModalState);
@@ -42,12 +43,17 @@ const Login = () => {
             <h3 className="text-4xl font-bold mb-10">Join Howler Today.</h3>
             <div className="flex flex-col justify-start h-52 w-[300px]">
               <div className="flex flex-col items-start">
-                <button className="signInButton" onClick={() => {}}>
+                <button
+                  className="signInButton"
+                  onClick={() => {
+                    signInWithProvider("GOOGLE");
+                  }}
+                >
                   <FcGoogle className="h-[22px] w-[22px] mr-1" />
-                  Sign up with Google
+                  Sign in with Google
                 </button>
                 <button className="signInButton" onClick={() => test()}>
-                  <AiFillApple className="h-[22px] w-[22px] mr-1" /> Sign up
+                  <AiFillApple className="h-[22px] w-[22px] mr-1" /> Sign in
                   with Apple
                 </button>
               </div>
@@ -61,11 +67,10 @@ const Login = () => {
                   className="w-full bg-rose-600 pt-2 pb-2 rounded-full hover:bg-rose-800 transition ease-out duration-300 font-bold"
                   onClick={() => {
                     setModalType("SIGN_UP");
-                    console.log(modalType);
                     setIsOpen(!isOpen);
                   }}
                 >
-                  Sign up with phone or email
+                  Sign up with email
                 </button>
                 <p className="text-xs">
                   By signing up, you agree to the{" "}
@@ -103,7 +108,7 @@ const Login = () => {
                   setIsOpen(!isOpen);
                 }}
               >
-                Sign In
+                Sign In with email
               </button>
             </div>
           </div>

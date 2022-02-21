@@ -14,15 +14,19 @@ import {
 } from "@heroicons/react/outline";
 import { useRecoilState } from "recoil";
 import { userState } from "../../atoms/modalAtom";
+import LogoutDropdown from "../LogoutDropdown";
+import { useRouter } from "next/router";
 
 const Sidebar = () => {
   const [user, setUser] = useRecoilState(userState);
-
-  console.log(user);
+  const router = useRouter();
 
   return (
     <div className="hidden sm:flex flex-col items-center xl:items-start xl:w-[340px] p-2 fixed h-full">
-      <div className="flex items-center justify-center w-14 h-14 hoverAnimation p-0 xl:ml-24">
+      <div
+        className="flex items-center justify-center w-14 h-14 hoverAnimation p-0 xl:ml-24"
+        onClick={() => router.replace("/")}
+      >
         <Image
           src={"/HowlerLogo.png"}
           width={30}
@@ -44,21 +48,7 @@ const Sidebar = () => {
       <button className="hidden xl:inline ml-auto bg-rose-600 text-white rounded-full w-56 h-[52px] text-lg font-bold shadow-md hover:bg-rose-700 transition duration-200 ease-in-out">
         Howl
       </button>
-      <div className="text-[#d9d9d9] flex items-center justify-center hoverAnimation xl:ml-auto mt-auto">
-        <div className="h-fit w-fit rounded-full xl:mr-2.5 flex items-center justify-center">
-          <img
-            src={user.profilePicture}
-            alt=""
-            className="rounded-full xl:mr-2.5 h-11 w-11"
-          />
-        </div>
-
-        <div className="hidden xl:inline leading-5">
-          <h4 className="font-bold">{user.username}</h4>
-          <p className="text-[#6e767d]">{user.tag}</p>
-        </div>
-        <DotsHorizontalIcon className="h-5 hidden xl:inline ml-10" />
-      </div>
+      <LogoutDropdown user={user} />
     </div>
   );
 };

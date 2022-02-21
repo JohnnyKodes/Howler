@@ -30,7 +30,7 @@ export default function Home({ trendingResults, followResults }) {
       onAuthStateChanged(auth, (currentUser) => {
         setLoggedUser(currentUser);
       }),
-    []
+    [auth]
   );
 
   useEffect(() => {

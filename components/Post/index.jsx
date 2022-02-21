@@ -35,10 +35,19 @@ const Post = ({ id, post, postPage }) => {
   const [isOpen, setIsOpen] = useRecoilState(commentModalState);
   const [postId, setPostId] = useRecoilState(postIdState);
   const [comments, setComments] = useState([]);
+  const [poster, setPoster] = useState({});
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState([]);
   const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
+
+  useEffect(() => {
+    if (post) {
+      onSnapshot(doc(db, "users", post.id), (snapshot) =>
+        setPoster(snapshot.data())
+      );
+    }
+  }, [db, post]);
 
   useEffect(
     () =>
@@ -84,18 +93,26 @@ const Post = ({ id, post, postPage }) => {
     >
       {!postPage && (
         <img
-          src={post?.userProfilePicture}
+          src={poster?.profilePicture}
           alt="profile picture"
           className="h-11 w-11 rounded-full mr-4 cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            router.replace(`/user/${poster.id}`);
+          }}
         />
       )}
       <div className="flex flex-col space-y-2 w-full">
         <div className={`flex ${!postPage && "justify-between"}`}>
           {postPage && (
             <img
-              src={post?.userProfilePicture}
+              src={poster?.profilePicture}
               alt="profile picture"
               className="h-11 w-11 rounded-full mr-4 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                router.replace(`/user/${poster.id}`);
+              }}
             />
           )}
           <div className="text-[#6e676d]">
@@ -104,13 +121,21 @@ const Post = ({ id, post, postPage }) => {
                 className={`font-bold text-[15px] sm:text-base text-[#d9d9d9] group-hover:underline ${
                   !postPage && "inline-block"
                 }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`user/${poster.id}`);
+                }}
               >
-                {post?.username}
+                {poster?.username}
               </h4>
               <span
                 className={`text-sm sm:text-[15px] ${!postPage && "ml-1.5"}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`user/${poster.id}`);
+                }}
               >
-                {post?.userTag}
+                {poster?.tag}
               </span>
             </div>{" "}
             .{" "}

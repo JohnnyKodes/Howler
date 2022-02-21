@@ -6,12 +6,28 @@ import {
   HeartIcon,
   ShareIcon,
 } from "@heroicons/react/outline";
+import { useEffect } from "react";
+import { useState } from "react";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
 
 const Comment = ({ comment }) => {
+  const [commenter, setCommenter] = useState({});
+
+  useEffect(() => {
+    if (comment) {
+      onSnapshot(doc(db, "users", comment.userId), (snapshot) =>
+        setCommenter(snapshot.data())
+      );
+    }
+  }, [comment, db]);
+
+  console.log(commenter);
+
   return (
     <div className="p-3 flex cursor-pointer border-b border-zinc-700">
       <img
-        src={comment?.userProfilePicture}
+        src={commenter?.profilePicture}
         alt="profile pic"
         className="h-11 w-11 rounded-full mr-4"
       />
@@ -20,10 +36,10 @@ const Comment = ({ comment }) => {
           <div className="text-[#6e767d]">
             <div className="inline-block group">
               <h4 className="font-bold text-[#d9d9d9] text-[15px] sm:text-base inline-block group-hover:underline">
-                {comment?.username}
+                {commenter?.username}
               </h4>
               <span className="ml-1.5 text-sm sm:text-[15px]">
-                {comment?.userTag}{" "}
+                {commenter?.tag}{" "}
               </span>
             </div>{" "}
             ·{" "}

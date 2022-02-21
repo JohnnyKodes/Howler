@@ -20,6 +20,11 @@ export const authModalType = atom({
   default: "",
 });
 
+export const editModalState = atom({
+  key: "editModalState",
+  default: false,
+});
+
 export const postIdState = atom({
   key: "postIdState",
   default: "",

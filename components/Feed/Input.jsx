@@ -19,6 +19,7 @@ import {
 } from "@firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "@firebase/storage";
 import { db, storage } from "../../firebase/firebase";
+import { useRouter } from "next/router";
 
 const Input = () => {
   const [input, setInput] = useState("");
@@ -27,6 +28,7 @@ const Input = () => {
   const filePickerRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useRecoilState(userState);
+  const router = useRouter();
 
   const addImageToPost = (e) => {
     console.log(e.target.files[0], "file");
@@ -55,9 +57,6 @@ const Input = () => {
 
     const docRef = await addDoc(collection(db, "posts"), {
       id: user.id,
-      username: user.username,
-      userProfilePicture: user.profilePicture,
-      userTag: user.tag,
       postText: input,
       timestamp: serverTimestamp(),
     });
@@ -79,8 +78,6 @@ const Input = () => {
     setShowEmojis(false);
   };
 
-  console.log(user);
-
   return (
     <div
       className={`border-b border-zinc-700 p-3 flex space-x-3 overflow-y-scroll ${
@@ -91,6 +88,9 @@ const Input = () => {
         src={user.profilePicture}
         alt="profile picture"
         className="h-11 w-11 rounded-full cursor-pointer"
+        onClick={() => {
+          router.push(`user/${user.id}`);
+        }}
       />
       <div className="w-full divide-y divide-zinc-700">
         <div className={`${selectedFile && "pb-7"} ${input && "space-y-2.5"}`}>

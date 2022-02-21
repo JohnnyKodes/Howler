@@ -45,9 +45,7 @@ const CommentModal = () => {
 
     await addDoc(collection(db, "posts", postId, "comments"), {
       comment: comment,
-      username: user.username,
-      tag: user.tag,
-      userProfilePicture: user.profilePicture,
+      userId: user.id,
       timestamp: serverTimestamp(),
     });
 

@@ -4,13 +4,23 @@ import { XIcon } from "@heroicons/react/outline";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import { AiFillApple } from "react-icons/ai";
-import { emailSignUp, emailSignIn } from "../../firebase/firebaseAuth";
+import {
+  emailSignUp,
+  emailSignIn,
+  signInWithProvider,
+} from "../../firebase/firebaseAuth";
 import { useRecoilState } from "recoil";
 import { authModalState } from "../../atoms/modalAtom";
+
+const usernameRegex = /^[a-zA-z][a-zA-z0-9_]{3,15}$/;
+const emailRegex = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
 
 const AuthModal = ({ modalType }) => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [showUsernameDisclaimer, setShowUsernameDisclaimer] = useState(false);
+  const [showEmailDisclaimer, setShowEmailDisclaimer] = useState(false);
+  const [showPasswordDisclaimer, setShowPasswordDisclaimer] = useState(false);
   const [isOpen, setIsOpen] = useRecoilState(authModalState);
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -21,6 +31,23 @@ const AuthModal = ({ modalType }) => {
     setUsername("");
 
     setIsOpen(!isOpen);
+  };
+
+  const handleEmailSignUp = (email, password, username) => {
+    console.log(username);
+    if (!usernameRegex.test(username)) {
+      setShowUsernameDisclaimer(true);
+      return;
+    } else if (!emailRegex.test(email)) {
+      setShowEmailDisclaimer(true);
+      return;
+    } else if (password.length < 6) {
+      setShowPasswordDisclaimer(true);
+      return;
+    } else {
+      emailSignUp(email, password, username);
+      closeModal();
+    }
   };
 
   if (modalType === "SIGN_IN") {
@@ -79,11 +106,23 @@ const AuthModal = ({ modalType }) => {
                     <div className="flex flex-col mt-5 gap-3">
                       <div className="flex flex-col">
                         <div className="flex flex-col items-start">
-                          <button className="signInButton" onClick={() => {}}>
+                          <button
+                            className="signInButton"
+                            onClick={() => {
+                              signInWithProvider("GOOGLE");
+                              closeModal();
+                            }}
+                          >
                             <FcGoogle className="h-[22px] w-[22px] mr-1" />
                             Sign in with Google
                           </button>
-                          <button className="signInButton">
+                          <button
+                            className="signInButton"
+                            onClick={() => {
+                              signInWithProvider("APPLE");
+                              closeModal();
+                            }}
+                          >
                             <AiFillApple className="h-[22px] w-[22px] mr-1" />{" "}
                             Sign in with Apple
                           </button>
@@ -118,7 +157,10 @@ const AuthModal = ({ modalType }) => {
                       </div>
                       <button
                         className="w-[160px] h-[40px] bg-rose-600 mx-auto my-4 rounded-full font-bold hover:bg-rose-800 transition ease-out"
-                        onClick={() => emailSignIn(email, password)}
+                        onClick={() => {
+                          emailSignIn(email, password);
+                          closeModal();
+                        }}
                       >
                         Sign In
                       </button>
@@ -192,8 +234,19 @@ const AuthModal = ({ modalType }) => {
                         type="text"
                         className="bg-transparent border border-zinc-700 border-1 p-4 rounded outline-none focus:border-rose-600 transition ease-out"
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) => {
+                          setUsername(e.target.value);
+                          setShowUsernameDisclaimer(false);
+                        }}
                       />
+                      <p
+                        className={`text-sm text-rose-600 ${
+                          showUsernameDisclaimer ? "" : "hidden"
+                        }`}
+                      >
+                        Invalid username. Username must not start with a number
+                        or contain any symbols except &quot;_&quot;
+                      </p>
                     </div>
                     <div className="flex flex-col">
                       <label htmlFor="" className="text-lg mb-1">
@@ -203,8 +256,18 @@ const AuthModal = ({ modalType }) => {
                         type="email"
                         className="bg-transparent border border-zinc-700 border-1 p-4 rounded outline-none focus:border-rose-600 transition ease-out"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          setShowEmailDisclaimer(false);
+                        }}
                       />
+                      <p
+                        className={`text-sm text-rose-600 ${
+                          showEmailDisclaimer ? "" : "hidden"
+                        }`}
+                      >
+                        Invalid email, please enter a valid email address.
+                      </p>
                     </div>
                     <div className="flex flex-col">
                       <label htmlFor="" className="text-lg mb-1">
@@ -214,12 +277,24 @@ const AuthModal = ({ modalType }) => {
                         type="password"
                         className="bg-transparent border border-zinc-700 border-1 p-4 rounded outline-none focus:border-rose-600 transition ease-out"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                          setShowPasswordDisclaimer(false);
+                        }}
                       />
+                      <p
+                        className={`text-sm text-rose-600 ${
+                          showPasswordDisclaimer ? "" : "hidden"
+                        }`}
+                      >
+                        Password must be at least 6 characters or more.
+                      </p>
                     </div>
                     <button
                       className="w-[160px] h-[40px] bg-rose-600 mx-auto my-4 rounded-full font-bold hover:bg-rose-800 transition ease-out"
-                      onClick={() => emailSignUp(email, password, username)}
+                      onClick={() => {
+                        handleEmailSignUp(email, password, username);
+                      }}
                     >
                       Sign Up
                     </button>

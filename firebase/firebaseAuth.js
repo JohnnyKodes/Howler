@@ -3,7 +3,9 @@ import {
   getRedirectResult,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signInWithRedirect,
+  signOut,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from "../firebase/firebase";
@@ -25,6 +27,9 @@ export const emailSignUp = async (email, password, username) => {
           tag: "@".concat(username.split(" ").join("").toLowerCase()),
           profilePicture: defaultProfilePicture,
           banner: "",
+          description: "Set a description so that people can know you better!",
+          followers: [],
+          following: [],
         });
       })();
     })
@@ -39,8 +44,31 @@ export const emailSignIn = (email, password) => {
 
 export const signInWithProvider = (provider) => {
   if (provider === "GOOGLE") {
-    signInWithRedirect(auth, googleProvider);
+    signInWithPopup(auth, googleProvider).then((result) => {
+      const user = result?.user;
+      const username = user.email.toString().split("@").shift();
 
-    getRedirectResult(auth).then((result) => {});
+      console.log(user);
+
+      (async () => {
+        await setDoc(doc(db, "users", user.uid), {
+          id: user.uid,
+          username,
+          email: user.email,
+          tag: "@".concat(username.split(" ").join("").toLowerCase()),
+          profilePicture: defaultProfilePicture,
+          banner: "",
+          description: "Set a description so that people can know you better!",
+          followers: [],
+          following: [],
+        });
+      })();
+    });
   }
+};
+
+export const logOut = () => {
+  signOut(auth).catch((error) => {
+    alert(error.message);
+  });
 };
