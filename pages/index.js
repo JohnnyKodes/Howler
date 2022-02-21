@@ -57,7 +57,7 @@ export default function Home({ trendingResults, followResults }) {
       <Head>
         <title>Howler</title>
         <meta name="description" content="Howler" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/HowlerLogoColored.png" />
       </Head>
       <main className="bg-zinc-900 min-h-screen flex max-w-[1500px] mx-auto">
         <Sidebar />
